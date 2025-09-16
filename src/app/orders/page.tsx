@@ -259,7 +259,7 @@ export default function OrdersPage() {
             <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No Orders Yet</h3>
             <p className="text-gray-600 mb-6">
-              You haven't placed any orders yet. Start shopping for fresh, local produce!
+              You haven&apos;t placed any orders yet. Start shopping for fresh, local produce!
             </p>
             <Button asChild className="bg-green-600 hover:bg-green-700">
               <Link href="/browse">Start Shopping</Link>

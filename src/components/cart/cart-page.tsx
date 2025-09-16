@@ -114,7 +114,7 @@ export function CartPage() {
             <ShoppingBag className="h-24 w-24 text-gray-300 mx-auto mb-6" />
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              Looks like you haven't added any fresh produce to your cart yet. 
+              Looks like you haven&apos;t added any fresh produce to your cart yet. 
               Start shopping to fill it up!
             </p>
             <Button asChild size="lg" className="bg-green-600 hover:bg-green-700">
