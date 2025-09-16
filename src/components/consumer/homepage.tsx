@@ -205,7 +205,7 @@ export function ConsumerHomepage() {
                 </div>
                 <Button 
                   type="submit"
-                  className="sm:absolute sm:right-2 sm:top-1/2 sm:transform sm:-translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-4 sm:py-2 rounded-xl font-medium transition-all duration-300"
+                  className="sm:absolute sm:right-2 sm:top-1/2 sm:transform sm:-translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-4 sm:px-8 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center"
                 >
                   Search
                 </Button>
