@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useReducer, useEffect, ReactNode } from 'react'
+import { useToast } from '@/components/ui/toast'
 
 export interface CartItem {
   id: string
@@ -116,6 +117,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0, itemCount: 0 })
+  const { addToast } = useToast()
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -136,19 +138,66 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [state.items])
 
   const addItem = (item: Omit<CartItem, 'id' | 'quantity'> & { quantity?: number }) => {
+    const existingItem = state.items.find(cartItem => cartItem.productId === item.productId)
+    const quantityToAdd = item.quantity || 1
+    
     dispatch({ type: 'ADD_ITEM', payload: item })
+    
+    if (existingItem) {
+      addToast({
+        type: 'success',
+        title: 'Cart Updated',
+        description: `${item.name} quantity updated in cart`,
+        duration: 2000
+      })
+    } else {
+      addToast({
+        type: 'success',
+        title: 'Added to Cart',
+        description: `${item.name} ${quantityToAdd > 1 ? `(${quantityToAdd})` : ''} added to cart`,
+        duration: 2000
+      })
+    }
   }
 
   const removeItem = (productId: string) => {
+    const item = state.items.find(cartItem => cartItem.productId === productId)
     dispatch({ type: 'REMOVE_ITEM', payload: { productId } })
+    
+    if (item) {
+      addToast({
+        type: 'info',
+        title: 'Item Removed',
+        description: `${item.name} removed from cart`,
+        duration: 2000
+      })
+    }
   }
 
   const updateQuantity = (productId: string, quantity: number) => {
+    const item = state.items.find(cartItem => cartItem.productId === productId)
     dispatch({ type: 'UPDATE_QUANTITY', payload: { productId, quantity } })
+    
+    if (item) {
+      addToast({
+        type: 'success',
+        title: 'Quantity Updated',
+        description: `${item.name} quantity updated to ${quantity}`,
+        duration: 1500
+      })
+    }
   }
 
   const clearCart = () => {
-    dispatch({ type: 'CLEAR_CART' })
+    if (state.items.length > 0) {
+      dispatch({ type: 'CLEAR_CART' })
+      addToast({
+        type: 'info',
+        title: 'Cart Cleared',
+        description: 'All items removed from cart',
+        duration: 2000
+      })
+    }
   }
 
   const isInCart = (productId: string) => {
