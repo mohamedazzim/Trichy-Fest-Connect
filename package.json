@@ -6,7 +6,11 @@
     "dev": "next dev --port 5000 --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start --port 5000 --hostname 0.0.0.0",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -19,12 +23,15 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.5",
     "framer-motion": "^12.23.12",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.544.0",
     "next": "^15.2.3",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.10.1",
+    "postgres": "^3.4.7",
     "prisma": "^6.16.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
