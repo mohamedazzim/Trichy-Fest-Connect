@@ -8,6 +8,7 @@ import { normalizeProduct } from '@/lib/product-mappers'
 import { eq, and, gte, lte, desc } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { ZodError } from 'zod'
+import { validateCSRF, createCSRFError } from '@/lib/csrf'
 
 // GET /api/products - List products with filtering
 export async function GET(request: NextRequest) {
@@ -114,31 +115,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Only producers can create products' }, { status: 403 })
     }
 
-    // CSRF protection
-    const origin = request.headers.get('origin')
-    const referer = request.headers.get('referer')
-    const host = request.headers.get('host')
-    
-    if (origin) {
-      try {
-        const originUrl = new URL(origin)
-        if (originUrl.host !== host) {
-          return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
-        }
-      } catch {
-        return NextResponse.json({ error: 'Invalid origin format' }, { status: 403 })
-      }
-    } else if (referer) {
-      try {
-        const refererUrl = new URL(referer)
-        if (refererUrl.host !== host) {
-          return NextResponse.json({ error: 'Invalid referer' }, { status: 403 })
-        }
-      } catch {
-        return NextResponse.json({ error: 'Invalid referer format' }, { status: 403 })
-      }
-    } else {
-      return NextResponse.json({ error: 'Missing origin or referer header' }, { status: 403 })
+    // CSRF protection - Environment-driven validation
+    const csrfResult = validateCSRF(request)
+    if (!csrfResult.isValid) {
+      const error = createCSRFError(csrfResult)
+      return NextResponse.json({ 
+        error: error.error,
+        details: error.details 
+      }, { status: error.status })
     }
 
     const body = await request.json()

@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { orders, orderItems, products, users, categories } from '@/lib/schema'
 import { eq, and, desc, sql, inArray } from 'drizzle-orm'
 import { z } from 'zod'
+import { validateCSRF, createCSRFError } from '@/lib/csrf'
 
 // SECURE Order creation schema - NO CLIENT PRICING OR FEES!
 const createOrderSchema = z.object({
@@ -28,7 +29,7 @@ const createOrderSchema = z.object({
 })
 
 // GET /api/orders - List user's orders
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
@@ -70,45 +71,21 @@ export async function GET(request: Request) {
 }
 
 // POST /api/orders - Create new order with SECURITY
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // PRODUCTION-GRADE CSRF Protection - Exact origin validation
-    const origin = request.headers.get('origin')
-    const referer = request.headers.get('referer')
-    
-    // SECURE: Use configured allowlist, not dynamic host header
-    const allowedOrigins = [
-      'http://localhost:5000',
-      'https://localhost:5000',
-      'http://127.0.0.1:5000',
-      'https://127.0.0.1:5000'
-    ]
-    
-    // Validate Origin header (exact match)
-    const isValidOrigin = origin && allowedOrigins.includes(origin)
-    
-    // Validate Referer header (exact origin match, not prefix!)
-    let isValidReferer = false
-    if (referer) {
-      try {
-        const refererUrl = new URL(referer)
-        const refererOrigin = refererUrl.origin
-        isValidReferer = allowedOrigins.includes(refererOrigin)
-      } catch {
-        isValidReferer = false // Invalid URL
-      }
-    }
-    
-    // Require either valid Origin OR valid Referer for CSRF protection
-    if (!isValidOrigin && !isValidReferer) {
+    // PRODUCTION-GRADE CSRF Protection - Environment-driven validation
+    const csrfResult = validateCSRF(request)
+    if (!csrfResult.isValid) {
+      const error = createCSRFError(csrfResult)
       return NextResponse.json({ 
-        error: 'CSRF validation failed - invalid origin/referer' 
-      }, { status: 403 })
+        error: error.error,
+        details: error.details 
+      }, { status: error.status })
     }
 
     const body = await request.json()

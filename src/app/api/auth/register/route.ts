@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { db } from '@/lib/db'
 import { users } from '@/lib/schema'
 import { eq } from 'drizzle-orm'
+import { validateCSRF, createCSRFError } from '@/lib/csrf'
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -14,6 +15,16 @@ const registerSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // CRITICAL SECURITY: CSRF protection for user registration
+    const csrfResult = validateCSRF(request)
+    if (!csrfResult.isValid) {
+      const error = createCSRFError(csrfResult)
+      return NextResponse.json({ 
+        error: error.error,
+        details: error.details 
+      }, { status: error.status })
+    }
+
     const body = await request.json()
     const { name, email, password, userType } = registerSchema.parse(body)
     const normalizedEmail = email.toLowerCase()

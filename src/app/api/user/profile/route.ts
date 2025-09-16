@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { users } from '@/lib/schema'
 import { eq } from 'drizzle-orm'
+import { validateCSRF, createCSRFError } from '@/lib/csrf'
 
 const updateProfileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(255, 'Name too long'),
@@ -57,31 +58,14 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // CSRF protection - strict origin and referer validation
-    const origin = request.headers.get('origin')
-    const referer = request.headers.get('referer')
-    const host = request.headers.get('host')
-    
-    if (origin) {
-      try {
-        const originUrl = new URL(origin)
-        if (originUrl.host !== host) {
-          return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
-        }
-      } catch {
-        return NextResponse.json({ error: 'Invalid origin format' }, { status: 403 })
-      }
-    } else if (referer) {
-      try {
-        const refererUrl = new URL(referer)
-        if (refererUrl.host !== host) {
-          return NextResponse.json({ error: 'Invalid referer' }, { status: 403 })
-        }
-      } catch {
-        return NextResponse.json({ error: 'Invalid referer format' }, { status: 403 })
-      }
-    } else {
-      return NextResponse.json({ error: 'Missing origin or referer header' }, { status: 403 })
+    // CSRF protection - Environment-driven validation
+    const csrfResult = validateCSRF(request)
+    if (!csrfResult.isValid) {
+      const error = createCSRFError(csrfResult)
+      return NextResponse.json({ 
+        error: error.error,
+        details: error.details 
+      }, { status: error.status })
     }
 
     const body = await request.json()

@@ -50,12 +50,13 @@ async function getProduct(id: string) {
 }
 
 interface ProductPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const session = await getServerSession(authOptions)
-  const product = await getProduct(params.id)
+  const resolvedParams = await params
+  const product = await getProduct(resolvedParams.id)
 
   if (!product || product.status !== 'active') {
     notFound()
@@ -70,7 +71,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 }
 
 export async function generateMetadata({ params }: ProductPageProps) {
-  const product = await getProduct(params.id)
+  const resolvedParams = await params
+  const product = await getProduct(resolvedParams.id)
   
   if (!product) {
     return {
