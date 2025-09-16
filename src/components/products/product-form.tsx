@@ -519,7 +519,7 @@ export function ProductForm({ mode, productId, initialData }: ProductFormProps) 
           )}
 
           {/* Upload Errors */}
-          {Object.keys(uploadErrors).length > 0 && (
+          {uploadErrors && Object.keys(uploadErrors).length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-md p-4">
               <div className="flex">
                 <AlertCircle className="h-5 w-5 text-red-400 mr-2 mt-0.5" />
@@ -527,7 +527,7 @@ export function ProductForm({ mode, productId, initialData }: ProductFormProps) 
                   <h3 className="text-sm font-medium text-red-800">Upload Errors:</h3>
                   <div className="mt-2 text-sm text-red-700">
                     <ul className="space-y-1">
-                      {Object.entries(uploadErrors).map(([key, error]) => (
+                      {Object.entries(uploadErrors || {}).map(([key, error]) => (
                         <li key={key}>• {error}</li>
                       ))}
                     </ul>

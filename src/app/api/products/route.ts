@@ -14,7 +14,7 @@ import { validateCSRF, createCSRFError } from '@/lib/csrf'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const queryParams = Object.fromEntries(searchParams.entries())
+    const queryParams = Object.fromEntries(searchParams.entries() || [])
     
     const validatedQuery = productQuerySchema.parse(queryParams)
     const { category, producer, status, isOrganic, minPrice, maxPrice, limit, offset } = validatedQuery

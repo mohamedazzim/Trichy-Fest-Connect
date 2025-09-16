@@ -426,7 +426,7 @@ export function ProductsManagement() {
                   <h3 className="text-sm font-medium text-red-800">Some operations failed:</h3>
                   <div className="mt-2 text-sm text-red-700">
                     <ul className="space-y-1">
-                      {Object.entries(bulkErrors).map(([productId, error]) => {
+                      {Object.entries(bulkErrors || {}).map(([productId, error]) => {
                         const product = products.find(p => p.id === productId)
                         return (
                           <li key={productId}>
