@@ -474,18 +474,22 @@ export function ProductForm({ mode, productId, initialData }: ProductFormProps) 
         </CardHeader>
         <CardContent className="space-y-4">
           {/* File Upload Section */}
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+          <label 
+            htmlFor="image-upload"
+            className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-200 transition-colors cursor-pointer block"
+            aria-label="Upload product images by clicking or dragging files here"
+          >
             <div className="text-center">
-              <Upload className="mx-auto h-12 w-12 text-gray-400" />
+              <Upload className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />
               <div className="mt-4">
-                <label htmlFor="image-upload" className="cursor-pointer">
+                <div className="focus:outline-none">
                   <span className="mt-2 block text-sm font-medium text-gray-900">
                     Upload product images
                   </span>
                   <span className="mt-1 block text-xs text-gray-500">
                     Drag and drop files here, or click to select files
                   </span>
-                </label>
+                </div>
                 <input
                   id="image-upload"
                   name="image-upload"
@@ -495,13 +499,14 @@ export function ProductForm({ mode, productId, initialData }: ProductFormProps) 
                   accept="image/*"
                   onChange={handleFileSelect}
                   disabled={imageUploading}
+                  aria-describedby="upload-constraints"
                 />
               </div>
-              <p className="mt-2 text-xs text-gray-500">
+              <p id="upload-constraints" className="mt-2 text-xs text-gray-500">
                 PNG, JPG, GIF up to 5MB each. Maximum 10 images.
               </p>
             </div>
-          </div>
+          </label>
 
           {/* Upload Progress */}
           {imageUploading && (

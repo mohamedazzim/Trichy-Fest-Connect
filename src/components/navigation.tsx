@@ -117,12 +117,14 @@ export function Navigation() {
               size="sm"
               onClick={toggleMobileMenu}
               className="p-2"
-              aria-label="Toggle mobile menu"
+              aria-label={isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Menu className="h-5 w-5" aria-hidden="true" />
               )}
             </Button>
           </div>
@@ -131,7 +133,7 @@ export function Navigation() {
         {/* Mobile Navigation Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div
+            <motion.div id="mobile-navigation"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}

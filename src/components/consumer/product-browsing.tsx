@@ -259,7 +259,7 @@ export function ProductBrowsing() {
           <div className="flex flex-col lg:flex-row gap-4 mb-6">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" aria-hidden="true" />
                 <Input
                   type="text"
                   placeholder="Search for products, categories, or producers..."
@@ -274,16 +274,24 @@ export function ProductBrowsing() {
                 variant={showFilters ? "default" : "outline"}
                 onClick={() => setShowFilters(!showFilters)}
                 className="h-12"
+                aria-label={showFilters ? "Hide filters" : "Show filters"}
+                aria-expanded={showFilters}
+                aria-controls="advanced-filters"
               >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                <SlidersHorizontal className="h-4 w-4 mr-2" aria-hidden="true" />
                 Filters
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
                 className="h-12"
+                aria-label={`Switch to ${viewMode === 'grid' ? 'list' : 'grid'} view`}
               >
-                {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+                {viewMode === 'grid' ? (
+                  <List className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Grid className="h-4 w-4" aria-hidden="true" />
+                )}
               </Button>
             </div>
           </div>
@@ -316,7 +324,7 @@ export function ProductBrowsing() {
           {/* Advanced Filters */}
           <AnimatePresence>
             {showFilters && (
-              <motion.div
+              <motion.div id="advanced-filters"
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
