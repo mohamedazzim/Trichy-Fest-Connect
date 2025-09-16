@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/response'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
@@ -159,7 +159,13 @@ export async function POST(request: Request) {
 
     // SECURITY: Validate stock and compute SERVER-SIDE totals
     let subtotal = 0
-    const validatedItems = []
+    const validatedItems: Array<{
+      productId: string
+      name: string
+      quantity: number
+      pricePerUnit: number
+      total: number
+    }> = []
     
     for (const item of items) {
       const product = dbProducts.find(p => p.id === item.productId)
