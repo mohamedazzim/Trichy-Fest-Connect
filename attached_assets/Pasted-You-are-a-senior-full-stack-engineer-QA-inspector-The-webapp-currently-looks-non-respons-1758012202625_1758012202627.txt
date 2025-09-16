@@ -1,0 +1,85 @@
+You are a **senior full-stack engineer + QA inspector**.  
+The webapp currently looks **non-responsive** and inconsistent.  
+Your tasks are to **fix responsiveness, audit every component, and perform end-to-end testing** until the app is **production-ready**.
+
+---
+
+## 1. Responsiveness
+- Make **every component responsive** across mobile, tablet, and desktop.
+- Pay extra attention to:
+  - **Header/NavBar** — collapses to hamburger on mobile, shows full menu on desktop.
+  - **Hero sections** — adapt text + image layout for smaller screens.
+  - **Cards/Grids** — stack vertically on small screens, multi-column on large.
+  - **Forms** — input fields scale properly, no overflow.
+  - **Buttons & CTAs** — properly aligned, readable at all breakpoints.
+
+---
+
+## 2. Component Fixes
+- Audit each component for broken or inconsistent behavior.
+- Fix **alignment, padding, margins, overflow issues**.
+- Add **aria-labels, keyboard accessibility, focus states**.
+- Ensure **consistent color scheme and typography** across all components.
+
+---
+
+## 3. End-to-End Functional Testing (simulate user actions)
+Perform **deep QA tests** on every flow:
+- **Authentication**
+  - Register new user (producer & consumer).
+  - Login, logout, session persistence.
+- **Producer Flow**
+  - Add a new product with **all details**: image upload, title, description, quantity, unit, price, neighborhood.
+  - Edit product and update details.
+  - Delete product.
+- **Consumer Flow**
+  - Browse listings, filter/search, view detail.
+  - Add item to cart, update quantity, remove item.
+  - Proceed to checkout, fill shipping form, confirm order.
+- **Contact Flow**
+  - Trigger contact (email/phone/WhatsApp) from listing detail.
+- **Admin Flow (if available)**
+  - Moderate listings (flag/remove).
+
+Agent must **act as QA tester**: attempt every button, link, and form to ensure there are **no 404s, dead links, or broken handlers**.
+
+---
+
+## 4. Automated & Manual Tests
+- Implement **Playwright E2E tests** covering:
+  - Login/Register
+  - Add new product (with all details, including image upload)
+  - Browse → Add to Cart → Checkout → Confirmation
+- Implement **unit tests** for forms (React Hook Form + Zod validation).
+- Provide test results output (`npm run test:e2e`).
+
+---
+
+## 5. Deliverables
+When done, return:
+1. Fixed responsive layouts for all components (Header, Hero, Cards, Forms).
+2. List of **all fixes applied**.
+3. File tree of changed files.
+4. **Run instructions** (`npm run dev`, `npm run build`).
+5. **E2E test results** (pass/fail summary).
+6. Demo credentials (producer/consumer).
+7. Note any **remaining limitations**.
+
+---
+
+## 6. UX & Polish
+- Use **Tailwind + Framer Motion** for smooth responsive transitions.
+- Ensure **cart icon & header elements adapt on small screens**.
+- Add **toast/snackbar** for actions (add to cart, product saved, form errors).
+- Provide **loading states** for forms & images.
+
+---
+
+## 7. Final QA
+After implementing fixes and tests:
+- Do a **self-critique**: “Would this app pass as production-ready for real users on both mobile and desktop?”
+- If **no**, fix further until the answer is **yes**.
+
+---
+
+**Begin now.** Start by fixing responsiveness (header first), then test each component and form (especially adding new product with all details). Finally, implement Playwright E2E tests and return results.Also remove sign in from googleand github buttons, it seems irrelevent to domain 
