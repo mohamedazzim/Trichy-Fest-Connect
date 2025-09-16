@@ -1,32 +1,22 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ShoppingBag } from 'lucide-react'
 import { useCart } from '@/contexts/cart-context'
-import { ShoppingCart } from './shopping-cart'
+import Link from 'next/link'
 
 export function CartButton() {
   const { state } = useCart()
-  const [isCartOpen, setIsCartOpen] = useState(false)
-
-  const handleCartClick = () => {
-    setIsCartOpen(true)
-  }
-
-  const handleCartClose = () => {
-    setIsCartOpen(false)
-  }
 
   return (
-    <>
-      <Button
-        variant="outline"
-        onClick={handleCartClick}
-        className="relative"
-      >
+    <Button
+      variant="outline"
+      asChild
+      className="relative"
+    >
+      <Link href="/cart">
         <ShoppingBag className="h-5 w-5" />
         {state.itemCount > 0 && (
           <motion.div
@@ -43,9 +33,7 @@ export function CartButton() {
           </motion.div>
         )}
         <span className="ml-2 hidden sm:inline">Cart</span>
-      </Button>
-      
-      <ShoppingCart isOpen={isCartOpen} onClose={handleCartClose} />
-    </>
+      </Link>
+    </Button>
   )
 }
