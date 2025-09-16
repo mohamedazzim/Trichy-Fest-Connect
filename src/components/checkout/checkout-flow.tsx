@@ -47,6 +47,7 @@ export function CheckoutFlow() {
   const [currentStep, setCurrentStep] = useState<CheckoutStep>('review')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [orderId, setOrderId] = useState<string>('')
+  const [confirmedOrderTotal, setConfirmedOrderTotal] = useState<number>(0)
 
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
     contactName: session?.user?.name || '',
@@ -106,6 +107,7 @@ export function CheckoutFlow() {
 
       const result = await response.json()
       setOrderId(result.order.id)
+      setConfirmedOrderTotal(parseFloat(result.order.total))
       
       // Clear cart and show confirmation
       clearCart()
@@ -689,7 +691,7 @@ export function CheckoutFlow() {
                       </div>
                       <div>
                         <span className="text-gray-600">Total:</span>
-                        <span className="font-bold text-green-600 ml-2">₹{grandTotal.toFixed(2)}</span>
+                        <span className="font-bold text-green-600 ml-2">₹{confirmedOrderTotal.toFixed(2)}</span>
                       </div>
                       <div>
                         <span className="text-gray-600">Delivery Date:</span>
