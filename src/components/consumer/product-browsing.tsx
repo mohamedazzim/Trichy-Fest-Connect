@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { useCart } from '@/contexts/cart-context'
 
 interface Category {
   id: string
@@ -55,6 +56,7 @@ type ViewMode = 'grid' | 'list'
 
 export function ProductBrowsing() {
   const searchParams = useSearchParams()
+  const { addItem } = useCart()
   
   // State
   const [products, setProducts] = useState<Product[]>([])
@@ -99,6 +101,20 @@ export function ProductBrowsing() {
     } catch (error) {
       console.error('Error fetching categories:', error)
     }
+  }
+
+  const addToCart = (product: Product) => {
+    addItem({
+      productId: product.id,
+      name: product.name,
+      image: product.images[0] || '',
+      pricePerUnit: product.pricePerUnit,
+      unit: product.unit,
+      maxQuantity: product.availableQuantity,
+      producerName: product.producerName || 'Unknown Producer',
+      isOrganic: product.isOrganic,
+      quantity: 1
+    })
   }
 
   // Filter and sort products
@@ -497,7 +513,15 @@ export function ProductBrowsing() {
                             <MapPin className="h-3 w-3" />
                             <span>{product.producerName}</span>
                           </div>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                          <Button 
+                            size="sm" 
+                            className="bg-green-600 hover:bg-green-700"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              addToCart(product)
+                            }}
+                          >
                             <ShoppingCart className="h-3 w-3 mr-1" />
                             Add to Cart
                           </Button>

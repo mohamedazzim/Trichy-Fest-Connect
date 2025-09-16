@@ -28,6 +28,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useCart } from '@/contexts/cart-context'
 
 interface ProductDetailProps {
   product: {
@@ -60,14 +61,25 @@ interface ProductDetailProps {
 
 export function ProductDetail({ product }: ProductDetailProps) {
   const router = useRouter()
+  const { addItem } = useCart()
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(product.minOrderQuantity || 1)
   const [isLiked, setIsLiked] = useState(false)
 
   const handleAddToCart = () => {
-    // Add to cart logic here
-    console.log('Adding to cart:', { productId: product.id, quantity })
-    // TODO: Implement cart functionality
+    addItem({
+      productId: product.id,
+      name: product.name,
+      image: product.images[0] || '',
+      pricePerUnit: product.pricePerUnit,
+      unit: product.unit,
+      maxQuantity: product.availableQuantity,
+      producerName: product.producerName || 'Unknown Producer',
+      isOrganic: product.isOrganic,
+      quantity: quantity
+    })
+    // Optional: Show a success message or visual feedback
+    console.log('Added to cart:', { productId: product.id, quantity })
   }
 
   const handleShare = async () => {

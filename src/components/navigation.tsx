@@ -3,6 +3,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { CartButton } from '@/components/cart/cart-button'
 
 export function Navigation() {
   const { data: session, status } = useSession()
@@ -23,6 +24,7 @@ export function Navigation() {
           </div>
           
           <div className="flex items-center space-x-4">
+            {session && <CartButton />}
             {session ? (
               <>
                 <Link href="/profile">
