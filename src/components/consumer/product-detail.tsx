@@ -29,6 +29,7 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/cart-context'
+import { useFavorites } from '@/contexts/favorites-context'
 
 interface ProductDetailProps {
   product: {
@@ -62,9 +63,23 @@ interface ProductDetailProps {
 export function ProductDetail({ product }: ProductDetailProps) {
   const router = useRouter()
   const { addItem } = useCart()
+  const { toggleFavorite, isFavorite } = useFavorites()
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(product.minOrderQuantity || 1)
-  const [isLiked, setIsLiked] = useState(false)
+  
+  const isLiked = isFavorite(product.id)
+
+  const handleToggleFavorite = () => {
+    toggleFavorite({
+      productId: product.id,
+      name: product.name,
+      image: product.images[0] || '',
+      pricePerUnit: product.pricePerUnit,
+      unit: product.unit,
+      producerName: product.producerName || 'Unknown Producer',
+      isOrganic: product.isOrganic
+    })
+  }
 
   const handleAddToCart = () => {
     addItem({
@@ -202,7 +217,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 {/* Action Buttons */}
                 <div className="absolute top-4 right-4 flex flex-col gap-2">
                   <motion.button
-                    onClick={() => setIsLiked(!isLiked)}
+                    onClick={handleToggleFavorite}
                     className={`p-3 rounded-full shadow-lg backdrop-blur-sm transition-colors ${
                       isLiked ? 'bg-red-500 text-white' : 'bg-white/90 text-gray-600'
                     }`}

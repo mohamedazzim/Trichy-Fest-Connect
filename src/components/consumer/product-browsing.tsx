@@ -25,6 +25,7 @@ import {
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useCart } from '@/contexts/cart-context'
+import { useFavorites } from '@/contexts/favorites-context'
 
 interface Category {
   id: string
@@ -57,6 +58,7 @@ type ViewMode = 'grid' | 'list'
 export function ProductBrowsing() {
   const searchParams = useSearchParams()
   const { addItem } = useCart()
+  const { toggleFavorite, isFavorite } = useFavorites()
   
   // State
   const [products, setProducts] = useState<Product[]>([])
@@ -471,11 +473,26 @@ export function ProductBrowsing() {
                         </div>
 
                         <motion.button
-                          className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            toggleFavorite({
+                              productId: product.id,
+                              name: product.name,
+                              image: product.images[0] || '',
+                              pricePerUnit: product.pricePerUnit,
+                              unit: product.unit,
+                              producerName: product.producerName,
+                              isOrganic: product.isOrganic
+                            })
+                          }}
+                          className={`absolute top-3 right-3 p-2 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 ${
+                            isFavorite(product.id) ? 'bg-red-500 text-white' : 'bg-white/90 text-gray-600'
+                          }`}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
                         >
-                          <Heart className="h-4 w-4 text-gray-600" />
+                          <Heart className={`h-4 w-4 ${isFavorite(product.id) ? 'fill-current' : ''}`} />
                         </motion.button>
                       </div>
                       
