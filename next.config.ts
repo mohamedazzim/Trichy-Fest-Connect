@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['res.cloudinary.com', 'wallpaperaccess.com'],
+    domains: ['res.cloudinary.com', 'wallpaperaccess.com', 'st.depositphotos.com'],
   },
   // Allow cross-origin requests in development and production
   async headers() {
