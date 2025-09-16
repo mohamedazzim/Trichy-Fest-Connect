@@ -17,6 +17,7 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/profile/:path*',
+    '/api/user/:path*',
     '/api/protected/:path*',
   ],
 }

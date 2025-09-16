@@ -25,6 +25,11 @@ export function Navigation() {
           <div className="flex items-center space-x-4">
             {session ? (
               <>
+                <Link href="/profile">
+                  <Button variant="ghost" className="text-gray-700">
+                    Profile
+                  </Button>
+                </Link>
                 <span className="text-gray-700">
                   Welcome, {session.user.name}
                 </span>
