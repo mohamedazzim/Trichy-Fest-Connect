@@ -36,6 +36,12 @@ function getAllowedOrigins(): string[] {
     origins.push(replitDomain)
   }
   
+  // Add common Replit domain patterns for this specific repl
+  origins.push(
+    'https://26b73d95-f269-41bf-b198-54b8352e1c54-00-2umxfqkke2qp1.pike.replit.dev',
+    'https://26b73d95-f269-41bf-b198-54b8352e1c54-00-2umxfqkke2qp1.pike.repl.co'
+  )
+  
   // Fallback: construct from host header if no configured origins (development only)
   if (origins.length === 0 && process.env.NODE_ENV === 'development') {
     console.warn('No CSRF origins configured, falling back to localhost')
