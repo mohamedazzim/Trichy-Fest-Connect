@@ -180,7 +180,7 @@ export function ConsumerHomepage() {
                   Direct.
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed opacity-90">
+              <p className="text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed opacity-90 px-4 sm:px-0">
                 Connect directly with local farmers in Trichy. 
                 <br className="hidden md:block" />
                 Get the freshest produce, support your community.
@@ -190,20 +190,22 @@ export function ConsumerHomepage() {
             <motion.form 
               variants={itemVariants}
               onSubmit={handleSearch}
-              className="max-w-2xl mx-auto"
+              className="max-w-2xl mx-auto px-4 sm:px-0"
             >
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="Search for fresh produce..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 pr-32 py-4 text-lg rounded-2xl border-0 bg-white/95 backdrop-blur-sm shadow-xl focus:ring-4 focus:ring-yellow-300/50"
-                />
+              <div className="flex flex-col sm:flex-row sm:relative gap-3 sm:gap-0">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search for fresh produce..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 pr-4 sm:pr-32 py-4 text-base sm:text-lg rounded-2xl border-0 bg-white/95 backdrop-blur-sm shadow-xl focus:ring-4 focus:ring-yellow-300/50 w-full"
+                  />
+                </div>
                 <Button 
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300"
+                  className="sm:absolute sm:right-2 sm:top-1/2 sm:transform sm:-translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-4 sm:py-2 rounded-xl font-medium transition-all duration-300"
                 >
                   Search
                 </Button>
@@ -212,19 +214,19 @@ export function ConsumerHomepage() {
 
             <motion.div 
               variants={itemVariants}
-              className="flex flex-wrap justify-center gap-4 pt-4"
+              className="flex flex-wrap justify-center gap-2 sm:gap-4 pt-4 px-4 sm:px-0"
             >
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Users className="h-4 w-4" />
-                <span className="text-sm font-medium">50+ Local Farmers</span>
+              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-full">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm font-medium">50+ Local Farmers</span>
               </div>
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Leaf className="h-4 w-4" />
-                <span className="text-sm font-medium">100% Fresh</span>
+              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-full">
+                <Leaf className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm font-medium">100% Fresh</span>
               </div>
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <MapPin className="h-4 w-4" />
-                <span className="text-sm font-medium">Trichy Region</span>
+              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-full">
+                <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm font-medium">Trichy Region</span>
               </div>
             </motion.div>
           </motion.div>
