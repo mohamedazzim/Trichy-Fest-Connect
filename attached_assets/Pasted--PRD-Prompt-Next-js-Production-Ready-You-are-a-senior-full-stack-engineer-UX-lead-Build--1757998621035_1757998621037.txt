@@ -1,0 +1,342 @@
+
+PRD Prompt (Next.js, Production-Ready)
+You are a **senior full-stack engineer + UX lead**. Build **Trichy Fresh Connect** — a production-quality, responsive, animated web app in **Next.js (App Router)** that connects local producers (farmers / home gardeners) with consumers to buy fresh produce locally.
+
+This prompt is a PRD + stepwise execution plan. Follow the sections exactly. Produce a runnable repo, tests, CI, and one-click deploy instructions for Replit and Vercel. Work in TypeScript by default.
+
+--- 
+
+# 1 — Goal & success criteria
+**Goal:** Deliver a production-ready Next.js app with excellent UI/UX, smooth animations, accessible components, secure backend APIs, persistent storage for images, tests, CI, and clear deployment docs.
+
+**Success Criteria:**
+- Producers can register/login, create/edit/delete listings with images.
+- Consumers can browse, search, filter by neighborhood, view listing details, and contact producers.
+- Listings persist in a database and are served with SSR/server components for SEO.
+- App passes unit tests and basic E2E flows.
+- README + `.env.example` + seed data + demo credentials included.
+- Deployed preview (Replit & Vercel) instructions present.
+
+---
+
+# 2 — Tech stack
+- **Framework:** Next.js (App Router) — TypeScript
+- **Styling:** Tailwind CSS + Tailwind Forms
+- **Components:** shadcn/ui + lucide-react icons
+- **Animations:** Framer Motion
+- **DB / ORM:** MongoDB Atlas + Prisma (or Mongoose fallback)
+- **Auth:** NextAuth (credentials + email magic link) with JWT
+- **Storage:** Cloudinary (or Supabase Storage)
+- **Forms & Validation:** React Hook Form + Zod
+- **Testing:** Jest + Supertest + Playwright
+- **CI/CD:** GitHub Actions
+- **Containerization:** Dockerfile + docker-compose
+
+Fallback (if Replit limits): Supabase for Auth + DB + Storage. Document migration.
+
+---
+
+# 3 — Personas & flows
+- **Producer:** register → login → create listing (images, qty, price, neighborhood) → edit/delete → mark sold.  
+- **Consumer:** browse/search → filter by neighborhood → view listing → contact producer.  
+- **Admin:** moderate listings.
+
+---
+
+# 4 — Data model
+**User**
+- id, name, email, phone, role, passwordHash, profileImage, location, createdAt
+
+**Listing**
+- id, producerId, title, produceName, description, quantity, unit, price?, neighborhood, address, images[], status, createdAt, updatedAt
+
+**ContactLog (optional)**
+- id, senderId, listingId, method, createdAt
+
+---
+
+# 5 — API contract
+Implement under `/app/api`:
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/listings?search=&neighborhood=&page=&limit=`
+- `GET /api/listings/:id`
+- `POST /api/listings` (protected, producer only)
+- `PUT /api/listings/:id` (protected & ownership)
+- `DELETE /api/listings/:id` (protected & ownership)
+- `POST /api/listings/:id/contact` (log/send)
+- `GET /api/profile/me`
+
+API responses:  
+```json
+{ "ok": true|false, "data": ..., "errors": [...] }
+
+
+6 — Frontend pages & components
+Home: hero + CTA + featured listings
+
+
+Browse: search, neighborhood filter, paginated grid
+
+
+Listing Card: image, name, qty, price, CTA
+
+
+Listing Detail: carousel, full info, contact buttons
+
+
+Producer Dashboard: stats + listing manager
+
+
+Listing Editor: form + image upload + validation
+
+
+Auth pages: register/login/email verify
+
+
+Admin panel (minimal)
+
+
+UI system: Tailwind + design tokens, responsive, light/dark mode, glassmorphism navbar, accessible modals.
+
+7 — Animations
+Framer Motion:
+Page transitions
+
+
+Card hover tilt/lift
+
+
+Navbar blur on scroll
+
+
+Carousel transitions
+
+
+Toasts + skeleton loaders
+
+
+
+8 — Accessibility
+Keyboard accessible
+
+
+aria-labels + alt text
+
+
+WCAG contrast
+
+
+Reduced motion support
+
+
+i18n-ready strings
+
+
+
+9 — Security & performance
+Input validation (Zod)
+
+
+JWT, bcrypt, rate limiting
+
+
+Helmet-like headers
+
+
+Image optimization (next/image + Cloudinary)
+
+
+Lighthouse target ≥ 90
+
+
+Privacy: allow contact relay option
+
+
+
+10 — Testing & CI
+Backend: Jest + Supertest
+
+
+Frontend: RTL for components
+
+
+E2E: Playwright
+
+
+CI: GitHub Actions (lint, test, build)
+
+
+Lint/Format: ESLint + Prettier + Husky
+
+
+
+11 — Deployment
+Replit: .replit config, secrets, npm run dev
+
+
+Vercel: production deploy with envs
+
+
+Docker: Dockerfile + docker-compose
+
+
+
+12 — Environment variables
+.env.example:
+NEXT_PUBLIC_APP_NAME="Trichy Fresh Connect"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="changeme"
+
+MONGODB_URI="..."
+CLOUDINARY_URL="cloudinary://..."
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+CLOUDINARY_CLOUD_NAME=
+
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
+
+
+13 — Seed data
+Seed script:
+Producers: Ravi (ravi@demo.local), Meena (meena@demo.local)
+
+
+Listings: Spinach 10kg, Tomatoes 5kg, Bananas 12pcs
+
+
+Demo password: DemoPass123
+
+14 — Repo structure
+/app
+  /(public)...
+  /(dashboard)...
+/components
+/hooks
+/lib
+/styles
+/tests
+/prisma or /models
+/tests
+Dockerfile
+docker-compose.yml
+README.md
+.github/workflows/ci.yml
+
+
+15 — Development phases
+Stop & report after each phase:
+Repo skeleton (Next.js + Tailwind + configs + README)
+
+
+Auth (NextAuth + register/login/email verify)
+
+
+Listings CRUD + DB integration
+
+
+Browse + Listing Detail pages
+
+
+Producer Dashboard + ownership checks
+
+
+Image uploads + contact API
+
+
+UI polish + animations
+
+
+Tests + CI
+
+
+Docker + deploy docs
+
+
+At each phase, output:
+Summary
+
+
+File tree
+
+
+Code snippets
+
+
+Run instructions
+
+
+Demo credentials
+
+
+Test results
+
+
+Known issues
+
+
+
+16 — UX guidelines
+Color palette: fresh greens + neutrals
+
+
+Typography: Inter (variable)
+
+
+Layout: clean, grid-based, whitespace
+
+
+Animations: subtle, staggered, premium feel
+
+
+References: Stripe Dashboard, modern marketplace Dribbble shots
+
+
+
+17 — Edge cases
+Replit DB limits → fallback Supabase
+
+
+SMS/email relay stubs if not feasible
+
+
+Document differences & migration steps
+
+
+
+18 — Acceptance checklist
+Before final delivery:
+All flows work
+
+
+Live preview (Replit/Vercel)
+
+
+README + .env.example + seed data
+
+
+Tests & CI pass
+
+
+Demo credentials documented
+
+
+Known limitations logged
+
+
+
+19 — Agent behavior
+Act as lead engineer & design reviewer.
+ For each UI:
+ 1st commit — base layout
+ 2nd commit — add animations
+ 3rd commit — accessibility fixes
+After final commit: summarize endpoints, pages, and test status.
+
+20 — Start instructions
+Begin with Phase 0: create repo skeleton with Next.js App Router (TS), Tailwind, Framer Motion, shadcn/ui, Prisma or Mongoose, NextAuth scaffolding, ESLint/Prettier, and README with .env.example.
+After Phase 0, stop and report progress before continuing.
+

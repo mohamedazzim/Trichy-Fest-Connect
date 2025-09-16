@@ -1,24 +1,107 @@
-Welcome to the NextJS base template bootstrapped using the `create-next-app`. This template supports TypeScript, but you can use normal JavaScript as well.
+# 🌱 Trichy Fresh Connect
 
-## Getting Started
+A production-ready Next.js marketplace connecting local producers (farmers & home gardeners) with consumers for fresh, local produce.
 
-Hit the run button to start the development server.
+## 🚀 Quick Start
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- MongoDB database
+- Cloudinary account (for image storage)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on `/api/hello`. This endpoint can be edited in `pages/api/hello.ts`.
+### Setup
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Copy environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+4. Configure your environment variables in `.env.local`
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Open [http://localhost:5000](http://localhost:5000) to view the application.
 
-## Learn More
+## 🛠 Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** Next.js 15 (App Router) with TypeScript
+- **Styling:** Tailwind CSS v4 + shadcn/ui components
+- **Animations:** Framer Motion
+- **Database:** MongoDB with Prisma ORM
+- **Authentication:** NextAuth.js
+- **Image Storage:** Cloudinary
+- **Forms:** React Hook Form + Zod validation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Project Structure
 
-## Productionizing your Next App
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── layout.tsx      # Root layout
+│   ├── page.tsx        # Home page
+│   └── globals.css     # Global styles
+├── components/         # React components
+│   └── ui/            # shadcn/ui components
+├── lib/               # Utilities and configurations
+│   └── utils.ts       # Utility functions
+└── hooks/             # Custom React hooks
+```
 
-To make your next App run smoothly in production make sure to deploy your project with [Repl Deployments](https://docs.replit.com/hosting/deployments/about-deployments)!
+## 🎯 Features (Phase 0 Complete)
 
-You can also produce a production build by running `npm run build` and [changing the run command](https://docs.replit.com/programming-ide/configuring-repl#run) to `npm run start`.
+✅ Next.js 15 App Router setup
+✅ TypeScript configuration
+✅ Tailwind CSS v4 integration
+✅ shadcn/ui component system
+✅ Framer Motion ready
+✅ Development environment configured
+✅ Basic landing page
+
+## 🔧 Development Commands
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+```
+
+## 📋 Phase 0 Status: ✅ COMPLETE
+
+- [x] Next.js App Router project setup
+- [x] TypeScript configuration
+- [x] Tailwind CSS v4 + shadcn/ui integration
+- [x] Framer Motion installation
+- [x] Basic project structure
+- [x] Development workflow configuration
+- [x] Environment variables template
+- [x] README documentation
+
+## 🚧 Next Phases
+
+- **Phase 1:** Authentication system (NextAuth + register/login)
+- **Phase 2:** Database integration (MongoDB + Prisma)
+- **Phase 3:** Listings CRUD operations
+- **Phase 4:** Browse & search functionality
+- **Phase 5:** Producer dashboard
+- **Phase 6:** Image uploads & contact system
+- **Phase 7:** UI polish & animations
+- **Phase 8:** Testing & CI/CD
+- **Phase 9:** Docker & deployment
+
+## 🎨 Design System
+
+- **Colors:** Fresh greens + neutrals
+- **Typography:** Inter font family
+- **Layout:** Grid-based with generous whitespace
+- **Animations:** Subtle, staggered, premium feel
+
+## 📄 License
+
+This project is licensed under the MIT License.
