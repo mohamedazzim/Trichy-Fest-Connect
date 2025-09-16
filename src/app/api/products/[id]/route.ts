@@ -11,10 +11,10 @@ import { ZodError } from 'zod'
 // GET /api/products/[id] - Get specific product
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // Get product with category and producer info
     const product = await db
@@ -64,7 +64,7 @@ export async function GET(
 // PUT /api/products/[id] - Update specific product
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -105,7 +105,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Missing origin or referer header' }, { status: 403 })
     }
 
-    const { id } = params
+    const { id } = await params
 
     // Check if product exists and belongs to the producer
     const existingProduct = await db
@@ -200,7 +200,7 @@ export async function PUT(
 // DELETE /api/products/[id] - Delete specific product
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -241,7 +241,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Missing origin or referer header' }, { status: 403 })
     }
 
-    const { id } = params
+    const { id } = await params
 
     // Check if product exists and belongs to the producer
     const existingProduct = await db

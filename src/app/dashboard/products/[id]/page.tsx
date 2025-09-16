@@ -9,7 +9,7 @@ import { eq, and } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 
 interface EditProductPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
@@ -23,11 +23,13 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
     redirect('/dashboard')
   }
 
+  const { id } = await params
+
   // Fetch the product and verify ownership
   const product = await db
     .select()
     .from(products)
-    .where(and(eq(products.id, params.id), eq(products.producerId, session.user.id)))
+    .where(and(eq(products.id, id), eq(products.producerId, session.user.id)))
     .limit(1)
     .then(rows => rows[0])
 
@@ -48,7 +50,7 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
               </p>
             </div>
             
-            <ProductForm mode="edit" productId={params.id} initialData={product} />
+            <ProductForm mode="edit" productId={id} initialData={product} />
           </div>
         </div>
       </div>
