@@ -11,13 +11,13 @@ export function Navigation() {
   if (status === 'loading') return null
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-white shadow-lg border-b border-green-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <span className="text-2xl">🌱</span>
-              <span className="text-xl font-bold text-gray-900">
+            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+              <span className="text-3xl">🌱</span>
+              <span className="text-xl font-bold text-green-800 tracking-tight">
                 Trichy Fresh Connect
               </span>
             </Link>
