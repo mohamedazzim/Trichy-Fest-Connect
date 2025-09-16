@@ -81,13 +81,26 @@ export function ProductForm({ mode, productId, initialData }: ProductFormProps) 
   useEffect(() => {
     async function loadCategories() {
       try {
-        const response = await fetch('/api/categories')
+        const response = await fetch('/api/categories', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
         if (response.ok) {
           const data = await response.json()
+          console.log('Categories loaded successfully:', data.categories?.length || 0, 'categories')
           setCategories(data.categories || [])
+        } else {
+          console.error('Failed to load categories. Status:', response.status, 'Text:', await response.text())
+          // Set empty array as fallback
+          setCategories([])
         }
       } catch (error) {
         console.error('Error loading categories:', error)
+        // Set empty array as fallback
+        setCategories([])
       } finally {
         setCategoriesLoading(false)
       }
