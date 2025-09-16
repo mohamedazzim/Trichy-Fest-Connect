@@ -89,7 +89,7 @@ export function Navigation() {
                 </div>
                 <Button
                   variant="outline"
-                  onClick={() => signOut({ callbackUrl: '/' })}
+                  onClick={() => signOut({ callbackUrl: '/browse' })}
                   className="text-sm"
                 >
                   Sign Out
@@ -199,7 +199,7 @@ export function Navigation() {
                         variant="ghost"
                         onClick={() => {
                           closeMobileMenu()
-                          signOut({ callbackUrl: '/' })
+                          signOut({ callbackUrl: '/browse' })
                         }}
                         className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                       >

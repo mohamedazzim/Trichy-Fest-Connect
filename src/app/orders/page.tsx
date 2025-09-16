@@ -20,6 +20,7 @@ import {
   Phone,
   MapPin,
   Mail,
+  RefreshCw,
   CreditCard,
   Eye,
   Leaf
@@ -118,12 +119,19 @@ export default function OrdersPage() {
 
     if (status === 'authenticated') {
       fetchOrders()
+      
+      // Set up auto-refresh every 30 seconds to check for order status updates
+      const refreshInterval = setInterval(() => {
+        fetchOrders(true) // Silent refresh to avoid loading spinner
+      }, 30000)
+      
+      return () => clearInterval(refreshInterval)
     }
   }, [status, router])
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (silent = false) => {
     try {
-      setIsLoading(true)
+      if (!silent) setIsLoading(true)
       const response = await fetch('/api/orders')
       
       if (!response.ok) {
@@ -132,11 +140,12 @@ export default function OrdersPage() {
 
       const data = await response.json()
       setOrders(data.orders || [])
+      setError(null) // Clear any previous errors on successful fetch
     } catch (err) {
       console.error('Error fetching orders:', err)
-      setError('Failed to load orders. Please try again.')
+      if (!silent) setError('Failed to load orders. Please try again.')
     } finally {
-      setIsLoading(false)
+      if (!silent) setIsLoading(false)
     }
   }
 
@@ -195,7 +204,7 @@ export default function OrdersPage() {
           <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Orders</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={fetchOrders} className="bg-green-600 hover:bg-green-700">
+          <Button onClick={() => fetchOrders()} className="bg-green-600 hover:bg-green-700">
             Try Again
           </Button>
         </div>
@@ -219,12 +228,24 @@ export default function OrdersPage() {
               Back to Shopping
             </Link>
           </Button>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            My Orders
-          </h1>
-          <p className="text-lg text-gray-600">
-            Track your orders and delivery status
-          </p>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                My Orders
+              </h1>
+              <p className="text-lg text-gray-600">
+                Track your orders and delivery status
+              </p>
+            </div>
+            <Button 
+              onClick={() => fetchOrders()}
+              variant="outline"
+              className="self-start md:self-auto"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh Orders
+            </Button>
+          </div>
         </motion.div>
 
         {/* Orders List */}
