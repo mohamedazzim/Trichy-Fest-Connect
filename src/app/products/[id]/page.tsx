@@ -40,13 +40,13 @@ async function getProduct(id: string) {
       unit: product.unit,
       availableQuantity: parseFloat(product.availableQuantity || '0'),
       minOrderQuantity: parseFloat(product.minOrderQuantity || '1'),
-      isOrganic: product.isOrganic,
+      isOrganic: product.isOrganic || false,
       images: product.images ? JSON.parse(product.images) : [],
-      harvestDate: product.harvestDate,
-      expiryDate: product.expiryDate,
+      harvestDate: product.harvestDate ? product.harvestDate.toISOString() : null,
+      expiryDate: product.expiryDate ? product.expiryDate.toISOString() : null,
       status: product.status,
-      createdAt: product.createdAt,
-      updatedAt: product.updatedAt,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
       categoryId: product.categoryId,
       producerId: product.producerId,
       categoryName: category?.name || null,
@@ -55,11 +55,14 @@ async function getProduct(id: string) {
       producerEmail: user?.email || null,
       producerPhone: user?.phone || null,
       producerAddress: user?.location || null,
+      producerBusinessName: null, // Field doesn't exist in schema, setting to null
       producerBio: user?.bio || null
     }
   } catch (error) {
     console.error('Error fetching product:', error)
-    console.error('Error stack:', error.stack)
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack)
+    }
     return null
   }
 }
