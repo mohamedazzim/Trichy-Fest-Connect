@@ -16,12 +16,13 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { name, email, password, userType } = registerSchema.parse(body)
+    const normalizedEmail = email.toLowerCase()
 
     // Check if user already exists
     const existingUser = await db
       .select()
       .from(users)
-      .where(eq(users.email, email))
+      .where(eq(users.email, normalizedEmail))
       .limit(1)
       .then((rows: any[]) => rows[0])
 
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
       .values({
         id: crypto.randomUUID(),
         name,
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
         userType,
       })

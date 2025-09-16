@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
         const user = await db
           .select()
           .from(users)
-          .where(eq(users.email, credentials.email))
+          .where(eq(users.email, credentials.email.toLowerCase()))
           .limit(1)
           .then((rows: any[]) => rows[0])
 
@@ -63,6 +63,21 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.userType = user.userType
       }
+      
+      // For OAuth users, fetch userType from database if not in token
+      if (!token.userType && token.email) {
+        const dbUser = await db
+          .select({ userType: users.userType })
+          .from(users)
+          .where(eq(users.email, token.email))
+          .limit(1)
+          .then((rows: any[]) => rows[0])
+        
+        if (dbUser) {
+          token.userType = dbUser.userType
+        }
+      }
+      
       return token
     },
     async session({ session, token }) {
@@ -79,7 +94,7 @@ export const authOptions: NextAuthOptions = {
           const existingUser = await db
             .select()
             .from(users)
-            .where(eq(users.email, user.email!))
+            .where(eq(users.email, user.email!.toLowerCase()))
             .limit(1)
             .then((rows: any[]) => rows[0])
 
@@ -87,7 +102,7 @@ export const authOptions: NextAuthOptions = {
             // Create new user for OAuth providers
             await db.insert(users).values({
               id: crypto.randomUUID(),
-              email: user.email!,
+              email: user.email!.toLowerCase(),
               name: user.name || '',
               image: user.image,
               userType: 'consumer', // Default to consumer, they can change later
