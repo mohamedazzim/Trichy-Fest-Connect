@@ -1,0 +1,78 @@
+You are a **senior full-stack engineer and QA inspector**.  
+We discovered a critical issue: when a **Consumer clicks "Add to Cart"**, it leads to a **404 error**.  
+
+Your tasks:
+
+---
+
+## 1. Fix Cart Page
+- Create a **Cart Page** under `/cart`.
+- Show all items added to cart with product details (title, price, quantity, image).
+- Implement **update quantity**, **remove item**, and **clear cart** functions.
+- Display **cart summary** (total items, total price).
+- Provide a **checkout button** → leads to placeholder Checkout page.
+
+---
+
+## 2. Add Missing Pages
+- **Checkout Page** — display shipping form + payment placeholder.
+- **Order Confirmation Page** — show success message + order details.
+- Ensure all routing uses Next.js App Router, no 404s.
+
+---
+
+## 3. End-to-End Inspection
+Perform a **complete audit** of the entire app:
+- **Header/NavBar** → all links working, cart icon shows item count.
+- **Home Page** → featured items visible, buttons clickable.
+- **Browse/Listings Page** → filters, search, and cards functional.
+- **Listing Detail Page** → add to cart, contact producer working.
+- **Producer Dashboard** → CRUD listings work, navigation works.
+- **Auth** → register/login/logout working with sessions.
+- **Cart** → add, edit, remove, checkout functional.
+- **Checkout → Confirmation** → no broken routes, correct state flow.
+
+---
+
+## 4. QA & Production Readiness
+- Fix **all broken buttons, links, and components**.
+- Ensure **responsive design** (mobile/desktop).
+- Add **toasts/snackbars** for cart actions (added, removed, updated).
+- Ensure **state persists** properly (cart should not clear on refresh unless intended).
+- Run a **test of each user flow**:  
+  - Producer flow (listings CRUD)  
+  - Consumer flow (browse → add to cart → checkout → confirmation)  
+  - Auth flow (login/logout/register)  
+
+---
+
+## 5. Deliverables
+When done, provide:
+1. Fixed **Cart Page** code with proper UI.
+2. Added **Checkout + Confirmation Pages**.
+3. Updated **Navbar/Header** with working Cart link.
+4. Short **file tree** of changed files.
+5. **Run instructions** for local dev and production build.
+6. **Demo credentials** for QA.
+7. **End-to-end test results** (manual or automated).
+8. Note **any remaining limitations**.
+
+---
+
+## 6. Design & UX
+- Use **Tailwind + Framer Motion** for smooth animations.
+- Cart icon with badge count (animates on add/remove).
+- Professional, consistent styling across all pages.
+- Accessible (aria labels, focus states).
+- Provide micro-interactions (hover, button presses, transitions).
+
+---
+
+## 7. Next Steps
+After fixes, **review all components and flows** again and self-critique:  
+“Would this pass as production-ready for a live consumer marketplace?”  
+If no → fix until yes.
+
+---
+
+**Begin now.** Start by fixing the Cart Page, then add Checkout + Confirmation, and finally perform full end-to-end inspection and QA fixes.

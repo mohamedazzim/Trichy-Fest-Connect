@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Navigation } from '@/components/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -287,37 +288,45 @@ export default function ProducerOrdersPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <motion.div 
-            className="inline-block w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          />
-          <p className="mt-4 text-gray-600">Loading orders...</p>
+      <>
+        <Navigation />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <motion.div 
+              className="inline-block w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
+            <p className="mt-4 text-gray-600">Loading orders...</p>
+          </div>
         </div>
-      </div>
+      </>
     )
   }
 
   if (error && orders.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-6">
-          <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Orders</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={fetchOrders} className="bg-green-600 hover:bg-green-700">
-            Try Again
-          </Button>
+      <>
+        <Navigation />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center max-w-md mx-auto p-6">
+            <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Orders</h2>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Button onClick={fetchOrders} className="bg-green-600 hover:bg-green-700">
+              Try Again
+            </Button>
+          </div>
         </div>
-      </div>
+      </>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <motion.div 
           className="mb-8"
@@ -713,7 +722,8 @@ export default function ProducerOrdersPage() {
             </motion.div>
           </motion.div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

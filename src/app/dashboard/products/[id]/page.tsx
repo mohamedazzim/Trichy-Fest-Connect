@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { ProductForm } from '@/components/products/product-form'
+import { Navigation } from '@/components/navigation'
 import { db } from '@/lib/db'
 import { products } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
@@ -35,18 +36,23 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Edit Product</h1>
-          <p className="text-gray-600 mt-2">
-            Update your product information and availability
-          </p>
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto py-8">
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold">Edit Product</h1>
+              <p className="text-gray-600 mt-2">
+                Update your product information and availability
+              </p>
+            </div>
+            
+            <ProductForm mode="edit" productId={params.id} initialData={product} />
+          </div>
         </div>
-        
-        <ProductForm mode="edit" productId={params.id} initialData={product} />
       </div>
-    </div>
+    </>
   )
 }
 
