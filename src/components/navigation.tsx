@@ -89,7 +89,12 @@ export function Navigation() {
                 </div>
                 <Button
                   variant="outline"
-                  onClick={() => signOut({ callbackUrl: '/browse' })}
+                  onClick={() => {
+                    const baseUrl = typeof window !== 'undefined' 
+                      ? window.location.origin 
+                      : process.env.NEXTAUTH_URL || 'http://localhost:5000'
+                    signOut({ callbackUrl: `${baseUrl}/browse` })
+                  }}
                   className="text-sm"
                 >
                   Sign Out
