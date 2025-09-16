@@ -288,7 +288,8 @@ export function ProductForm({ mode, productId, initialData }: ProductFormProps) 
             <Textarea
               {...register('description')}
               placeholder="Describe your product, growing methods, taste, etc."
-              rows={3}
+              rows={4}
+              className="resize-y"
             />
             {errors.description && (
               <p className="text-sm text-red-600 mt-1">{errors.description.message}</p>

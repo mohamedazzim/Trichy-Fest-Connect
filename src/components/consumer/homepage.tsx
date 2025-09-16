@@ -393,7 +393,7 @@ export function ConsumerHomepage() {
                       
                       <CardContent className="p-4 space-y-3">
                         <div>
-                          <h3 className="font-semibold text-lg text-gray-900 group-hover:text-green-700 transition-colors line-clamp-1">
+                          <h3 className="font-semibold text-lg text-gray-900 group-hover:text-green-700 transition-colors line-clamp-2 leading-snug">
                             {product.name}
                           </h3>
                           <p className="text-sm text-gray-600">{product.categoryName}</p>
@@ -415,8 +415,8 @@ export function ConsumerHomepage() {
                         
                         <div className="flex items-center justify-between pt-2">
                           <div className="flex items-center gap-1 text-sm text-gray-600">
-                            <MapPin className="h-3 w-3" />
-                            <span>{product.producerName}</span>
+                            <MapPin className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">{product.producerName}</span>
                           </div>
                           <Button size="sm" className="bg-green-600 hover:bg-green-700">
                             <ShoppingCart className="h-3 w-3 mr-1" />
