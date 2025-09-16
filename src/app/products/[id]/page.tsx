@@ -54,8 +54,7 @@ async function getProduct(id: string) {
       producerName: user?.name || null,
       producerEmail: user?.email || null,
       producerPhone: user?.phone || null,
-      producerAddress: user?.address || null,
-      producerBusinessName: user?.businessName || null,
+      producerAddress: user?.location || null,
       producerBio: user?.bio || null
     }
   } catch (error) {

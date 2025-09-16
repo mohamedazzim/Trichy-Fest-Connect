@@ -1,0 +1,53 @@
+2025-09-16T10:53:48Z info: Starting Build
+
+> my-app@0.1.0 build
+> next build
+
+
+   ▲ Next.js 15.2.3
+
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+
+ ✓ Compiled successfully
+
+   Linting and checking validity of types ...
+
+
+./src/components/cart/shopping-cart.tsx
+176:35  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/checkout/checkout-flow.tsx
+275:33  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/consumer/product-detail.tsx
+254:25  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/dashboard/consumer-dashboard.tsx
+151:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/products/product-form.tsx
+572:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/products/products-management.tsx
+508:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+
+Failed to compile.
+
+
+./src/app/products/[id]/page.tsx:57:30
+Type error: Property 'address' does not exist on type '{ id: string; name: string; email: string; password: string | null; userType: "producer" | "consumer"; image: string | null; bio: string | null; location: string | null; phone: string | null; emailVerified: Date | null; createdAt: Date; updatedAt: Date; }'.
+
+  55 |       producerEmail: user?.email || null,
+  56 |       producerPhone: user?.phone || null,
+> 57 |       producerAddress: user?.address || null,
+     |                              ^
+  58 |       producerBusinessName: user?.businessName || null,
+  59 |       producerBio: user?.bio || null
+  60 |     }
+
+Next.js build worker exited with code: 1 and signal: null
+
