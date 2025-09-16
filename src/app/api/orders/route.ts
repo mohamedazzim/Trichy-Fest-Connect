@@ -3,15 +3,15 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { orders, orderItems, products, users, categories } from '@/lib/schema'
-import { eq, and, desc } from 'drizzle-orm'
+import { eq, and, desc, sql, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 
-// Order creation schema
+// SECURE Order creation schema - NO CLIENT PRICING OR FEES!
 const createOrderSchema = z.object({
   items: z.array(z.object({
     productId: z.string(),
-    quantity: z.number().positive(),
-    pricePerUnit: z.number().positive()
+    quantity: z.number().positive()
+    // NO pricePerUnit - server fetches real prices
   })),
   customerDetails: z.object({
     contactName: z.string(),
@@ -23,10 +23,8 @@ const createOrderSchema = z.object({
     deliveryNotes: z.string().optional(),
     deliveryDate: z.string()
   }),
-  subtotal: z.number().positive(),
-  deliveryCharge: z.number().nonnegative(),
-  total: z.number().positive(),
-  paymentMethod: z.enum(['cod', 'online'])
+  // NO deliveryCharge - server calculates this based on city/pincode
+  paymentMethod: z.enum(['cod']) // Only COD for now - no payment gateway
 })
 
 // GET /api/orders - List user's orders
@@ -71,12 +69,46 @@ export async function GET(request: Request) {
   }
 }
 
-// POST /api/orders - Create new order
+// POST /api/orders - Create new order with SECURITY
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // PRODUCTION-GRADE CSRF Protection - Exact origin validation
+    const origin = request.headers.get('origin')
+    const referer = request.headers.get('referer')
+    
+    // SECURE: Use configured allowlist, not dynamic host header
+    const allowedOrigins = [
+      'http://localhost:5000',
+      'https://localhost:5000',
+      'http://127.0.0.1:5000',
+      'https://127.0.0.1:5000'
+    ]
+    
+    // Validate Origin header (exact match)
+    const isValidOrigin = origin && allowedOrigins.includes(origin)
+    
+    // Validate Referer header (exact origin match, not prefix!)
+    let isValidReferer = false
+    if (referer) {
+      try {
+        const refererUrl = new URL(referer)
+        const refererOrigin = refererUrl.origin
+        isValidReferer = allowedOrigins.includes(refererOrigin)
+      } catch {
+        isValidReferer = false // Invalid URL
+      }
+    }
+    
+    // Require either valid Origin OR valid Referer for CSRF protection
+    if (!isValidOrigin && !isValidReferer) {
+      return NextResponse.json({ 
+        error: 'CSRF validation failed - invalid origin/referer' 
+      }, { status: 403 })
     }
 
     const body = await request.json()
@@ -89,44 +121,156 @@ export async function POST(request: Request) {
       }, { status: 400 })
     }
 
-    const { items, customerDetails, subtotal, deliveryCharge, total, paymentMethod } = validation.data
+    const { items, customerDetails, paymentMethod } = validation.data
+    
+    // SERVER-SIDE delivery charge calculation based on location
+    const deliveryCharge = calculateDeliveryCharge(customerDetails.city, customerDetails.pincode)
+    
+    function calculateDeliveryCharge(city: string, pincode: string): number {
+      // Secure server-side delivery calculation
+      if (city.toLowerCase().includes('trichy') || city.toLowerCase().includes('tiruchirappalli')) {
+        return 30 // Local delivery within Trichy
+      }
+      // For other cities in Tamil Nadu
+      return 50
+    }
 
-    // Create order in database
-    const [newOrder] = await db.insert(orders).values({
-      customerId: session.user.id,
-      status: 'pending',
-      subtotal: subtotal.toString(),
-      deliveryCharge: deliveryCharge.toString(),
-      total: total.toString(),
-      paymentMethod,
-      deliveryDate: customerDetails.deliveryDate,
-      contactName: customerDetails.contactName,
-      email: customerDetails.email,
-      phone: customerDetails.phone,
-      address: customerDetails.address,
-      city: customerDetails.city,
-      pincode: customerDetails.pincode,
-      deliveryNotes: customerDetails.deliveryNotes || ''
-    }).returning()
+    // SECURITY: Fetch REAL product prices from database
+    const productIds = items.map(item => item.productId)
+    
+    if (productIds.length === 0) {
+      return NextResponse.json({ error: 'No items in order' }, { status: 400 })
+    }
 
-    // Create order items
-    const orderItemsData = items.map(item => ({
-      orderId: newOrder.id,
-      productId: item.productId,
-      quantity: item.quantity.toString(),
-      pricePerUnit: item.pricePerUnit.toString(),
-      total: (item.quantity * item.pricePerUnit).toString()
-    }))
+    const dbProducts = await db
+      .select({
+        id: products.id,
+        pricePerUnit: products.pricePerUnit,
+        availableQuantity: products.availableQuantity,
+        name: products.name,
+        status: products.status
+      })
+      .from(products)
+      .where(inArray(products.id, productIds))
 
-    await db.insert(orderItems).values(orderItemsData)
+    if (dbProducts.length !== productIds.length) {
+      return NextResponse.json({ error: 'Some products not found' }, { status: 400 })
+    }
+
+    // SECURITY: Validate stock and compute SERVER-SIDE totals
+    let subtotal = 0
+    const validatedItems = []
+    
+    for (const item of items) {
+      const product = dbProducts.find(p => p.id === item.productId)
+      if (!product) {
+        return NextResponse.json({ error: `Product ${item.productId} not found` }, { status: 400 })
+      }
+      
+      if (product.status !== 'active') {
+        return NextResponse.json({ 
+          error: `Product ${product.name} is not available for purchase` 
+        }, { status: 400 })
+      }
+      
+      const availableQty = parseFloat(product.availableQuantity)
+      if (availableQty < item.quantity) {
+        return NextResponse.json({ 
+          error: `Insufficient stock for ${product.name}. Available: ${availableQty}, Requested: ${item.quantity}` 
+        }, { status: 400 })
+      }
+      
+      const realPrice = parseFloat(product.pricePerUnit)
+      const itemTotal = realPrice * item.quantity
+      subtotal += itemTotal
+      
+      validatedItems.push({
+        productId: item.productId,
+        name: product.name,
+        quantity: item.quantity,
+        pricePerUnit: realPrice,
+        total: itemTotal
+      })
+    }
+    
+    const total = subtotal + deliveryCharge
+
+    // Create order with transaction (atomic operation)
+    const result = await db.transaction(async (tx) => {
+      // Create order record
+      const [newOrder] = await tx.insert(orders).values({
+        customerId: session.user.id,
+        status: 'pending',
+        subtotal: subtotal.toString(),
+        deliveryCharge: deliveryCharge.toString(),
+        total: total.toString(),
+        paymentMethod,
+        deliveryDate: customerDetails.deliveryDate,
+        contactName: customerDetails.contactName,
+        email: customerDetails.email,
+        phone: customerDetails.phone,
+        address: customerDetails.address,
+        city: customerDetails.city,
+        pincode: customerDetails.pincode,
+        deliveryNotes: customerDetails.deliveryNotes || ''
+      }).returning()
+
+      // Create order items
+      const orderItemsData = validatedItems.map(item => ({
+        orderId: newOrder.id,
+        productId: item.productId,
+        quantity: item.quantity.toString(),
+        pricePerUnit: item.pricePerUnit.toString(),
+        total: item.total.toString()
+      }))
+
+      await tx.insert(orderItems).values(orderItemsData)
+      
+      // CRITICAL: Atomic inventory decrement with concurrency safety
+      for (const item of validatedItems) {
+        const updateResult = await tx
+          .update(products)
+          .set({
+            availableQuantity: sql`${products.availableQuantity} - ${item.quantity}`,
+            updatedAt: new Date()
+          })
+          .where(
+            and(
+              eq(products.id, item.productId),
+              sql`${products.availableQuantity} >= ${item.quantity}` // Ensure sufficient stock
+            )
+          )
+          .returning({ id: products.id })
+          
+        if (updateResult.length === 0) {
+          // Race condition detected - insufficient stock now
+          throw new Error(`Race condition: insufficient stock for ${item.name}`)
+        }
+      }
+
+      return newOrder
+    })
 
     return NextResponse.json({
-      order: newOrder,
-      message: 'Order created successfully'
+      order: result,
+      orderId: result.id,
+      total: total,
+      message: 'Order placed successfully! Your fresh produce will be delivered soon.'
     }, { status: 201 })
 
   } catch (error) {
     console.error('Error creating order:', error)
-    return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
+    
+    // More specific error handling
+    if (error instanceof Error) {
+      if (error.message.includes('insufficient')) {
+        return NextResponse.json({ error: 'Insufficient stock for one or more items' }, { status: 400 })
+      }
+      if (error.message.includes('transaction')) {
+        return NextResponse.json({ error: 'Order could not be processed. Please try again.' }, { status: 500 })
+      }
+    }
+    
+    return NextResponse.json({ error: 'Failed to create order. Please try again.' }, { status: 500 })
   }
 }
