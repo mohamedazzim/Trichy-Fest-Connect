@@ -27,6 +27,32 @@ export function Navigation() {
             {session && <CartButton />}
             {session ? (
               <>
+                <Link href="/browse">
+                  <Button variant="ghost" className="text-gray-700">
+                    Browse
+                  </Button>
+                </Link>
+                {session.user.userType === 'consumer' && (
+                  <Link href="/orders">
+                    <Button variant="ghost" className="text-gray-700">
+                      My Orders
+                    </Button>
+                  </Link>
+                )}
+                {session.user.userType === 'producer' && (
+                  <Link href="/dashboard">
+                    <Button variant="ghost" className="text-gray-700">
+                      Dashboard
+                    </Button>
+                  </Link>
+                )}
+                {session.user.userType === 'producer' && (
+                  <Link href="/dashboard/orders">
+                    <Button variant="ghost" className="text-gray-700">
+                      Orders
+                    </Button>
+                  </Link>
+                )}
                 <Link href="/profile">
                   <Button variant="ghost" className="text-gray-700">
                     Profile

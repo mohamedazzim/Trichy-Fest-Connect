@@ -4,6 +4,7 @@ import { relations } from 'drizzle-orm'
 export const userTypeEnum = pgEnum('user_type', ['producer', 'consumer'])
 export const productStatusEnum = pgEnum('product_status', ['active', 'inactive', 'out_of_stock'])
 export const listingStatusEnum = pgEnum('listing_status', ['active', 'sold', 'expired'])
+export const orderStatusEnum = pgEnum('order_status', ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])
 
 // Users table
 export const users = pgTable('users', {
@@ -72,9 +73,50 @@ export const listings = pgTable('listings', {
   statusIdx: index('listings_status_idx').on(table.status),
 }))
 
+// Orders table
+export const orders = pgTable('orders', {
+  id: varchar('id', { length: 255 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  customerId: varchar('customer_id', { length: 255 }).notNull().references(() => users.id),
+  status: orderStatusEnum('status').notNull().default('pending'),
+  subtotal: decimal('subtotal', { precision: 10, scale: 2 }).notNull(),
+  deliveryCharge: decimal('delivery_charge', { precision: 10, scale: 2 }).notNull().default('0'),
+  total: decimal('total', { precision: 10, scale: 2 }).notNull(),
+  paymentMethod: varchar('payment_method', { length: 50 }).notNull(), // cod, online
+  deliveryDate: varchar('delivery_date', { length: 255 }).notNull(),
+  contactName: varchar('contact_name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 20 }).notNull(),
+  address: text('address').notNull(),
+  city: varchar('city', { length: 255 }).notNull(),
+  pincode: varchar('pincode', { length: 10 }).notNull(),
+  deliveryNotes: text('delivery_notes'),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+}, (table) => ({
+  customerIdx: index('orders_customer_id_idx').on(table.customerId),
+  statusIdx: index('orders_status_idx').on(table.status),
+  deliveryDateIdx: index('orders_delivery_date_idx').on(table.deliveryDate),
+}))
+
+// Order Items table
+export const orderItems = pgTable('order_items', {
+  id: varchar('id', { length: 255 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  orderId: varchar('order_id', { length: 255 }).notNull().references(() => orders.id),
+  productId: varchar('product_id', { length: 255 }).notNull().references(() => products.id),
+  quantity: decimal('quantity', { precision: 10, scale: 2 }).notNull(),
+  pricePerUnit: decimal('price_per_unit', { precision: 10, scale: 2 }).notNull(),
+  total: decimal('total', { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+}, (table) => ({
+  orderIdx: index('order_items_order_id_idx').on(table.orderId),
+  productIdx: index('order_items_product_id_idx').on(table.productId),
+}))
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   products: many(products),
+  orders: many(orders),
 }))
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
@@ -91,11 +133,31 @@ export const productsRelations = relations(products, ({ one, many }) => ({
     references: [users.id],
   }),
   listings: many(listings),
+  orderItems: many(orderItems),
 }))
 
 export const listingsRelations = relations(listings, ({ one }) => ({
   product: one(products, {
     fields: [listings.productId],
+    references: [products.id],
+  }),
+}))
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  customer: one(users, {
+    fields: [orders.customerId],
+    references: [users.id],
+  }),
+  orderItems: many(orderItems),
+}))
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  product: one(products, {
+    fields: [orderItems.productId],
     references: [products.id],
   }),
 }))
@@ -112,3 +174,9 @@ export type NewProduct = typeof products.$inferInsert
 
 export type Listing = typeof listings.$inferSelect
 export type NewListing = typeof listings.$inferInsert
+
+export type Order = typeof orders.$inferSelect
+export type NewOrder = typeof orders.$inferInsert
+
+export type OrderItem = typeof orderItems.$inferSelect
+export type NewOrderItem = typeof orderItems.$inferInsert

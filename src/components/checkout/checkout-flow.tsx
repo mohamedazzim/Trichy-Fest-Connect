@@ -89,24 +89,23 @@ export function CheckoutFlow() {
         subtotal: state.total,
         deliveryCharge,
         total: grandTotal,
-        status: 'pending',
-        paymentMethod: orderDetails.paymentMethod,
-        deliveryDate: orderDetails.deliveryDate
+        paymentMethod: orderDetails.paymentMethod
       }
 
-      // TODO: Submit order to API
-      // const response = await fetch('/api/orders', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(orderData)
-      // })
+      // Submit order to API
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      })
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // Generate mock order ID
-      const mockOrderId = `TFC${Date.now().toString().slice(-6)}`
-      setOrderId(mockOrderId)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to place order')
+      }
+
+      const result = await response.json()
+      setOrderId(result.order.id)
       
       // Clear cart and show confirmation
       clearCart()
@@ -114,7 +113,8 @@ export function CheckoutFlow() {
       
     } catch (error) {
       console.error('Error placing order:', error)
-      alert('Failed to place order. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to place order. Please try again.'
+      alert(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
