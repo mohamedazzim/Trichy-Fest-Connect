@@ -36,10 +36,11 @@ function getAllowedOrigins(): string[] {
     origins.push(replitDomain)
   }
   
-  // Add common Replit domain patterns for this specific repl
+  // Add common Replit domain patterns dynamically
+  const replitSubdomain = process.env.REPLIT_DOMAINS?.split('.')[0] || '26b73d95-f269-41bf-b198-54b8352e1c54-00-2umxfqkke2qp1'
   origins.push(
-    'https://26b73d95-f269-41bf-b198-54b8352e1c54-00-2umxfqkke2qp1.pike.replit.dev',
-    'https://26b73d95-f269-41bf-b198-54b8352e1c54-00-2umxfqkke2qp1.pike.repl.co'
+    `https://${replitSubdomain}.pike.replit.dev`,
+    `https://${replitSubdomain}.pike.repl.co`
   )
   
   // Fallback: construct from host header if no configured origins (development only)
