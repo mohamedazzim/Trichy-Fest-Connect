@@ -1,0 +1,63 @@
+You are a **senior full-stack engineer + QA inspector**.  
+The **Cart page is not opening (404 issue)**. You must **fix it**, then **audit and verify all navigation/redirect pages**, ensuring every route renders properly.
+
+---
+
+## 1. Fix Cart Page
+- Implement the `/cart` page so it renders correctly.
+- Show cart items with product details (image, title, qty, price).
+- Add cart summary (total items, total price).
+- Include actions: update quantity, remove item, clear cart, checkout button.
+
+---
+
+## 2. Redirects & Navigation Audit
+- Collect a list of **all possible navigation routes** triggered by:
+  - Header / Navbar links
+  - Footer links
+  - Buttons (e.g., Add to Cart, Checkout, Dashboard)
+  - Internal redirects (e.g., after login, after posting a product)
+- For each route:
+  1. Verify if the page exists and renders.
+  2. If missing, **create the page** with minimal placeholder content + proper layout.
+  3. If broken, **fix the navigation/linking**.
+
+---
+
+## 3. End-to-End Verification
+Perform a full inspection:
+- **Auth Flow**: Register, login, logout → redirect to correct pages.
+- **Producer Flow**: Dashboard → add/edit/delete product → redirect back correctly.
+- **Consumer Flow**: Browse → product detail → add to cart → cart page → checkout → confirmation.
+- **Admin Flow (if available)**: Moderate listings → redirect works.
+
+---
+
+## 4. QA & Production-Ready Fixes
+- Ensure **no navigation leads to 404 or blank page**.
+- Add toasts/snackbars for success/failure of redirects (optional).
+- Ensure responsive layouts remain intact after fixes.
+- Add **loading/fallback states** for page transitions.
+
+---
+
+## 5. Deliverables
+Return:
+1. Fixed **Cart Page** code.
+2. A **complete list of all routes/pages** (with their paths).
+3. Status for each route: `works ✅ / fixed 🛠️ / newly created ✨`.
+4. Updated file tree for changed/added files.
+5. **Run instructions** for dev & production build.
+6. Demo credentials for testing.
+7. Test results (manual or automated).
+
+---
+
+## 6. Final QA
+After fixes:
+- Self-critique: *“Does every navigation and redirect reliably render a page without errors?”*
+- If not, fix until the answer is **yes**.
+
+---
+
+**Begin now.** Start by fixing the Cart page, then enumerate and verify every possible navigation redirect, fixing or creating pages where needed, until the entire app is fully connected and production-ready.
