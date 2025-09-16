@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -34,9 +34,28 @@ export function ProductsManagement() {
     fetchProducts()
   }, [])
 
+  const filterProducts = useCallback(() => {
+    let filtered = products
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // Filter by status
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(product => product.status === statusFilter)
+    }
+
+    setFilteredProducts(filtered)
+  }, [products, searchTerm, statusFilter])
+
   useEffect(() => {
     filterProducts()
-  }, [products, searchTerm, statusFilter])
+  }, [filterProducts])
 
   useEffect(() => {
     // Clear selection when products change
@@ -56,25 +75,6 @@ export function ProductsManagement() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const filterProducts = () => {
-    let filtered = products
-
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    }
-
-    // Filter by status
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(product => product.status === statusFilter)
-    }
-
-    setFilteredProducts(filtered)
   }
 
   const deleteProduct = async (productId: string) => {
